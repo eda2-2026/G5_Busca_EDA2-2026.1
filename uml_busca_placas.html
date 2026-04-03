@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagrama de Classes — Busca em Placas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d1117;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 32px 64px;
+    font-family: 'Sora', sans-serif;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #e6edf3;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  header p {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: #484f58;
+    letter-spacing: 0.5px;
+  }
+
+  .scroll-wrap {
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 16px;
+  }
+
+  .diagram {
+    position: relative;
+    width: 1000px;
+    height: 760px;
+    flex-shrink: 0;
+    margin: 0 auto;
+  }
+
+  /* ── ARROWS SVG ─────────────────────────────────────── */
+  .arrows-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── CLASS BOX ──────────────────────────────────────── */
+  .cbox {
+    position: absolute;
+    width: 280px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.04) inset;
+    z-index: 2;
+  }
+
+  .cbox-header {
+    padding: 13px 16px 11px;
+  }
+  .cbox-stereotype {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    opacity: 0.65;
+    display: block;
+    margin-bottom: 3px;
+    letter-spacing: 0.3px;
+  }
+  .cbox-name {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    display: block;
+  }
+
+  .cbox-section {
+    background: #13181f;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 7px 0;
+  }
+  .crow {
+    font-family: 'Fira Code', monospace;
+    font-size: 11.5px;
+    padding: 3px 14px;
+    line-height: 1.55;
+    white-space: nowrap;
+    color: #c9d1d9;
+  }
+  .vis  { color: #484f58; }
+  .kw   { color: #79c0ff; }   /* type keyword */
+  .nm   { color: #ffa657; }   /* attribute name */
+  .fn   { color: #d2a8ff; }   /* method name */
+  .rt   { color: #56d364; }   /* return type */
+  .ct   { color: #e6edf3; font-weight: 600; } /* constructor */
+
+  /* Per-class color themes */
+  .th-class  { left:40px;  top:60px;  border-color:#1a7a55; }
+  .th-class  .cbox-header { background:#071e14; color:#5DCAA5; }
+
+  .ab-class  { left:40px;  top:430px; border-color:#1a4e7a; }
+  .ab-class  .cbox-header { background:#071525; color:#79c0ff; }
+
+  .no-class  { left:680px; top:60px;  border-color:#433a94; }
+  .no-class  .cbox-header { background:#100d2e; color:#d2a8ff; }
+
+  .ve-class  { left:680px; top:430px; border-color:#7a3016; }
+  .ve-class  .cbox-header { background:#1e0c05; color:#ffa657; }
+
+  /* ── LEGEND ─────────────────────────────────────────── */
+  .legend {
+    margin-top: 36px;
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .leg-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    color: #484f58;
+  }
+  .leg-item svg { flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Diagrama de Classes</h1>
+  <p>// Missão — Busca em Placas de Veículos · Tabela Hash + Árvore Binária de Busca</p>
+</header>
+
+<div class="scroll-wrap">
+<div class="diagram">
+
+<!-- ════════════════════════════════════════════════
+     SVG OVERLAY — arrows & relationship lines
+     Heights (computed from CSS):
+       header=44px  row=25px  spad=15px(top+bot) divider=1px
+       TH : 44 + 15+50+15 + 1 + 15+150+15 = 305  → top=60  bot=365
+       AB : 44 + 15+25+15 + 1 + 15+125+15 = 255  → top=430 bot=685
+       No : 44 + 15+75+15 + 1 + 15+25+15  = 205  → top=60  bot=265
+       Ve : 44 + 15+100+15+ 1 + 15+25+15  = 230  → top=430 bot=660
+     Centers:
+       TH cx=180  cy=212
+       AB cx=180  cy=557
+       No cx=820  cy=162
+       Ve cx=820  cy=545
+═════════════════════════════════════════════════ -->
+<svg class="arrows-svg">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5"
+      markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1.5 1.5L8.5 5L1.5 8.5" fill="none" stroke="#8b949e"
+        stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="9" refY="5"
+      markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1.5 1.5L8.5 5L1.5 8.5" fill="none" stroke="#534AB7"
+        stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- ① TabelaHash ◆──────► ArvBinaria  (composição vertical) -->
+  <!-- diamond at TH bottom center (180, 365) -->
+  <polygon points="180,355 191,365 180,375 169,365"
+    fill="#1a7a55" stroke="#1a7a55" stroke-width="0.5"/>
+  <line x1="180" y1="375" x2="180" y2="428"
+    stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="188" y="366" fill="#8b949e" font-family="Fira Code,monospace" font-size="11">1</text>
+  <text x="188" y="422" fill="#8b949e" font-family="Fira Code,monospace" font-size="11">n</text>
+  <text x="195" y="404" fill="#484f58" font-family="Sora,sans-serif" font-size="11" font-style="italic">contém</text>
+
+  <!-- ② ArvBinaria ◆──────► No  (composição L-shaped) -->
+  <!-- diamond at AB right center (320, 557) -->
+  <polygon points="320,547 331,557 320,567 309,557"
+    fill="#1a4e7a" stroke="#1a4e7a" stroke-width="0.5"/>
+  <path d="M331,557 L500,557 L500,162 L678,162"
+    stroke="#8b949e" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="335" y="549" fill="#8b949e" font-family="Fira Code,monospace" font-size="11">1</text>
+  <text x="650" y="152" fill="#8b949e" font-family="Fira Code,monospace" font-size="11">0..n</text>
+  <text x="505" y="362" fill="#484f58" font-family="Sora,sans-serif" font-size="11" font-style="italic">raiz</text>
+
+  <!-- ③ No - - - - ► Veiculo  (associação vertical tracejada) -->
+  <line x1="820" y1="265" x2="820" y2="428"
+    stroke="#8b949e" stroke-width="1.5"
+    stroke-dasharray="6 3" marker-end="url(#arr)"/>
+  <text x="828" y="277" fill="#8b949e" font-family="Fira Code,monospace" font-size="11">1</text>
+  <text x="828" y="422" fill="#8b949e" font-family="Fira Code,monospace" font-size="11">1</text>
+  <text x="834" y="352" fill="#484f58" font-family="Sora,sans-serif" font-size="11" font-style="italic">armazena</text>
+
+  <!-- ④ No self-reference  (esq / dir) -->
+  <path d="M960,105 L990,105 L990,185 L962,185"
+    stroke="#534AB7" stroke-width="1.5" fill="none"
+    stroke-dasharray="0" marker-end="url(#arr-purple)"/>
+  <text x="994" y="130" fill="#484f58" font-family="Sora,sans-serif" font-size="11" font-style="italic">esq / dir</text>
+  <text x="994" y="148" fill="#534AB7" font-family="Fira Code,monospace" font-size="11">0..2</text>
+</svg>
+
+<!-- ════════ TabelaHash ════════ -->
+<div class="cbox th-class">
+  <div class="cbox-header">
+    <span class="cbox-stereotype">« classe »</span>
+    <span class="cbox-name">TabelaHash</span>
+  </div>
+  <div class="cbox-section">
+    <div class="crow"><span class="vis">─ </span><span class="nm">tabela</span><span class="vis"> : </span><span class="kw">ArvBinaria[]</span></div>
+    <div class="crow"><span class="vis">─ </span><span class="nm">tamanho</span><span class="vis"> : </span><span class="kw">int</span></div>
+  </div>
+  <div class="cbox-section">
+    <div class="crow"><span class="vis">+ </span><span class="ct">TabelaHash</span><span class="vis">(tamanho : </span><span class="kw">int</span><span class="vis">)</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="fn">hash</span><span class="vis">(placa : </span><span class="kw">char[]</span><span class="vis">) : </span><span class="rt">int</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="fn">inserir</span><span class="vis">(v : </span><span class="kw">Veiculo*</span><span class="vis">)</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="fn">buscar</span><span class="vis">(placa : </span><span class="kw">char[]</span><span class="vis">) : </span><span class="rt">Veiculo*</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="fn">remover</span><span class="vis">(placa : </span><span class="kw">char[]</span><span class="vis">)</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="fn">imprimir</span><span class="vis">()</span></div>
+  </div>
+</div>
+
+<!-- ════════ ArvBinaria ════════ -->
+<div class="cbox ab-class">
+  <div class="cbox-header">
+    <span class="cbox-stereotype">« classe »</span>
+    <span class="cbox-name">ArvBinaria</span>
+  </div>
+  <div class="cbox-section">
+    <div class="crow"><span class="vis">─ </span><span class="nm">raiz</span><span class="vis"> : </span><span class="kw">No*</span></div>
+  </div>
+  <div class="cbox-section">
+    <div class="crow"><span class="vis">+ </span><span class="ct">ArvBinaria</span><span class="vis">()</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="fn">inserir</span><span class="vis">(v : </span><span class="kw">Veiculo*</span><span class="vis">)</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="fn">buscar</span><span class="vis">(placa : </span><span class="kw">char[]</span><span class="vis">) : </span><span class="rt">Veiculo*</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="fn">remover</span><span class="vis">(placa : </span><span class="kw">char[]</span><span class="vis">)</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="fn">imprimir</span><span class="vis">()</span></div>
+  </div>
+</div>
+
+<!-- ════════ No ════════ -->
+<div class="cbox no-class">
+  <div class="cbox-header">
+    <span class="cbox-stereotype">« nó »</span>
+    <span class="cbox-name">No</span>
+  </div>
+  <div class="cbox-section">
+    <div class="crow"><span class="vis">─ </span><span class="nm">esq</span><span class="vis"> : </span><span class="kw">No*</span></div>
+    <div class="crow"><span class="vis">─ </span><span class="nm">dir</span><span class="vis"> : </span><span class="kw">No*</span></div>
+    <div class="crow"><span class="vis">─ </span><span class="nm">veiculo</span><span class="vis"> : </span><span class="kw">Veiculo*</span></div>
+  </div>
+  <div class="cbox-section">
+    <div class="crow"><span class="vis">+ </span><span class="ct">No</span><span class="vis">(v : </span><span class="kw">Veiculo*</span><span class="vis">)</span></div>
+  </div>
+</div>
+
+<!-- ════════ Veiculo ════════ -->
+<div class="cbox ve-class">
+  <div class="cbox-header">
+    <span class="cbox-stereotype">« entidade »</span>
+    <span class="cbox-name">Veiculo</span>
+  </div>
+  <div class="cbox-section">
+    <div class="crow"><span class="vis">+ </span><span class="nm">placa</span><span class="vis"> : </span><span class="kw">char[8]</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="nm">modelo</span><span class="vis"> : </span><span class="kw">char[50]</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="nm">ano</span><span class="vis"> : </span><span class="kw">int</span></div>
+    <div class="crow"><span class="vis">+ </span><span class="nm">proprietario</span><span class="vis"> : </span><span class="kw">char[50]</span></div>
+  </div>
+  <div class="cbox-section">
+    <div class="crow"><span class="vis">+ </span><span class="ct">Veiculo</span><span class="vis">(placa, modelo, ano, prop)</span></div>
+  </div>
+</div>
+
+</div><!-- .diagram -->
+</div><!-- .scroll-wrap -->
+
+<!-- ════════ LEGEND ════════ -->
+<div class="legend">
+  <div class="leg-item">
+    <svg width="44" height="14">
+      <polygon points="7,7 17,2 27,7 17,12" fill="#8b949e"/>
+      <line x1="27" y1="7" x2="44" y2="7" stroke="#8b949e" stroke-width="1.5"/>
+    </svg>
+    composição ◆
+  </div>
+  <div class="leg-item">
+    <svg width="44" height="14">
+      <line x1="0" y1="7" x2="38" y2="7" stroke="#8b949e" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <polygon points="34,3 44,7 34,11" fill="#8b949e"/>
+    </svg>
+    associação →
+  </div>
+  <div class="leg-item">
+    <span style="color:#d2a8ff">método()</span>
+  </div>
+  <div class="leg-item">
+    <span style="color:#ffa657">atributo</span>
+  </div>
+  <div class="leg-item">
+    <span style="color:#79c0ff">: tipo</span>
+  </div>
+  <div class="leg-item">
+    <span style="color:#56d364">: retorno</span>
+  </div>
+  <div class="leg-item">
+    <span style="color:#e6edf3; font-weight:600">Construtor</span>
+  </div>
+</div>
+
+</body>
+</html>
