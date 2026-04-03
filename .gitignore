@@ -1,0 +1,7 @@
+# Arquivos de configuração do CLion (JetBrains)
+.idea/
+*.iml
+
+# Pastas de build geradas pelo CMake (muito importante não commitar isso!)
+cmake-build-*/
+build/
