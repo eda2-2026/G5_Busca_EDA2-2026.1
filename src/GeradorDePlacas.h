@@ -1,9 +1,8 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <cstdlib>
-#include <ctime>
 
 std::string GerarPlacaAleatoria() {
     std::string placa = "";
@@ -27,7 +26,7 @@ std::string GerarPlacaAleatoria() {
 }
 
 void GerarBancoDeDadosCSV(int quantidade_de_carros, std::string nome_do_arquivo) {
-    stq::ofstream arquivo(nome_do_arquivo);
+    std::ofstream arquivo(nome_do_arquivo);
 
     if (!arquivo.is_open()) {
         std::cout << "Erro ao criar o arquivo CSV." << std::endl;
@@ -39,7 +38,7 @@ void GerarBancoDeDadosCSV(int quantidade_de_carros, std::string nome_do_arquivo)
     // Vetor com opcoes de cores para serem sorteadas
     std::vector<std::string> cores = {"Branco", "Preto", "Prata", "Cinza", "Vermelho", "Azul"};
 
-    for (int i = 0; i < quantidade_de_carrosq; i++) {
+    for (int i = 0; i < quantidade_de_carros; i++) {
         std::string placa = GerarPlacaAleatoria();
         std::string cor = cores[rand() % cores.size()];
         int ano = 1990 + (rand() % 37); // Sorteia um ano entre 1990 e 2026
@@ -50,7 +49,5 @@ void GerarBancoDeDadosCSV(int quantidade_de_carros, std::string nome_do_arquivo)
 
     arquivo.close();
     std::cout << "Sucesso: " << nome_do_arquivo << " gerado com " << quantidade_de_carros << " veículos." << std::endl;
-}
-
 }
 
