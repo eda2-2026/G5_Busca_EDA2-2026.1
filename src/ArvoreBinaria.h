@@ -1,9 +1,8 @@
 #pragma once
 #include <string>
+#include <vector>
 #include "NoArvore.h"
 #include "Veiculo.h"
-
-
 
 class ArvoreBinaria {
 public:
@@ -12,6 +11,28 @@ public:
     ArvoreBinaria() {
         raiz = nullptr;
     }
+
+    ~ArvoreBinaria() {
+        DestruirArvore(raiz);
+    }
+
+    std::vector<Veiculo*> ObterTodosOsVeiculos() {
+        std::vector<Veiculo*> lista_de_veiculos;
+        ColetarVeiculos(raiz, lista_de_veiculos);
+        return lista_de_veiculos;
+    }
+
+private:
+
+    void DestruirArvore(NoArvore* no) {
+        if (no != nullptr) {
+            DestruirArvore(no->filho_esquerdo);
+            DestruirArvore(no->filho_direito);
+            delete no;
+        }
+    }
+
+public:
 
     // ── Inserir ──────────────────────────────────────────────────────────
 
@@ -119,5 +140,15 @@ public:
         }
 
         delete atual;
+    }
+
+    // Realiza uma travessia em ordem para coletar os veiculos armazenados
+    // naquela arvore
+    void ColetarVeiculos(NoArvore* no, std::vector<Veiculo*>& lista_de_veiculos) {
+        if (no != nullptr) {
+            ColetarVeiculos(no->filho_esquerdo, lista_de_veiculos);
+            lista_de_veiculos.push_back(no->veiculo);
+            ColetarVeiculos(no->filho_direito, lista_de_veiculos);
+        }
     }
 };
