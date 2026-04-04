@@ -1,15 +1,15 @@
+#pragma once
 #include <string>
 
 class Veiculo {
-private:
+public:
     std::string placa;
     std::string cor;
     int ano;
 
-public:
-
-    std::String GetPlaca() {
-        return placa;
+    Veiculo(std::string placa, std::string cor, int ano) {
+        this->placa = placa;
+        this->cor   = cor;
+        this->ano   = ano;
     }
-
 };
