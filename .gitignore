@@ -5,3 +5,5 @@
 # Pastas de build geradas pelo CMake (muito importante não commitar isso!)
 cmake-build-*/
 build/
+
+*.csv
