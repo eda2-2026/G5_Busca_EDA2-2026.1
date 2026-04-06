@@ -95,7 +95,7 @@ Veículo não encontrado (deletado com sucesso).
 
 ### Documetações do projeto
 
-* [Diagrama de Classes do projeto](docs/diagrama-de-classes)
+* [Diagrama de Classes do projeto](docs/diagrama-de-classes.md)
 * [Testes Realizados no projeto](docs/testando-a-tabela-hash.md)
 
 ### Complexidade
