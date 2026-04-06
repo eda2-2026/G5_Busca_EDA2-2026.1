@@ -8,12 +8,12 @@ A versão inicial do diagrama de classes conta com quatro classes:
 * **NoArvore:** A classe responsável por armazenar as informações de um veículo, e os filhos à esquerda e à direita.
 * **Veiculo:** A classe responsável por armazenar as informações de um veículo, como placa (que funciona como uma chave primária), cor e ano.
 
-![diagrama de classes](../../G5_Busca_EDA2-2026.1/assets/diagrama-de-classes-v1.png)
+![diagrama de classes](../G5_Busca_EDA2-2026.1/assets/diagrama-de-classes-v1.png)
 **Autor:** [Luiz Faria](https://github.com/luizfaria1989)
 
 ## Versão final do diagrama de classes do projeto
 
-![diagrama de classes](../../G5_Busca_EDA2-2026.1/assets/diagrama-de-classes-final.png)
+![diagrama de classes](../G5_Busca_EDA2-2026.1/assets/diagrama-de-classes-final.png)
 **Autor:** [Luiz Faria](https://github.com/luizfaria1989)
 
 ## Histórico de Versões
