@@ -1,6 +1,5 @@
 # G5_Busca_EDA2-2026.1
 
-
 # Busca_BuscaDePlacasVeiculares
 
 Número da Lista: G5
@@ -93,6 +92,11 @@ Veículo não encontrado (deletado com sucesso).
 ```
 
 ## Outros
+
+### Documetações do projeto
+
+* [Diagrama de Classes do projeto](docs/diagrama-de-classes.md)
+* [Testes Realizados no projeto](docs/testando-a-tabela-hash.md)
 
 ### Complexidade
 
